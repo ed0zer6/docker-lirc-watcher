@@ -55,7 +55,7 @@ def on_mqtt_message(client, userdata, msg):
 prev_data = None
 timer = None
 
-mqtt = paho.Client(MQTT_ID)
+mqtt = paho.Client(paho.CallbackAPIVersion.VERSION1, client_id="MQTT_ID")
 mqtt.on_connect = on_mqtt_connect
 mqtt.on_message = on_mqtt_message
 mqtt.will_set(MQTT_STATUS_TOPIC, payload=MQTT_PAYLOAD_OFFLINE,

@@ -8,6 +8,7 @@ import socket
 import fcntl
 import errno
 from time import sleep
+import ssl
 
 LONG_PRESS = os.getenv('LONG_PRESS', 12)
 READ_TIMEOUT = os.getenv('READ_TIMEOUT', 0.2)
@@ -18,6 +19,7 @@ MQTT_USER = os.getenv('MQTT_USER', None)
 MQTT_PASSWORD = os.getenv('MQTT_PASSWORD', None)
 MQTT_QOS = os.getenv('MQTT_QOS', 1)
 MQTT_PORT = int(os.getenv('MQTT_PORT', 1883))
+MQTT_TLS = bool(os.getenv('MQTT_TLS', False))
 MQTT_ID = os.getenv('MQTT_ID', 'lirc-watcher')
 MQTT_PREFIX = os.getenv('MQTT_PREFIX', 'lirc')
 
@@ -61,6 +63,8 @@ mqtt.on_message = on_mqtt_message
 mqtt.will_set(MQTT_STATUS_TOPIC, payload=MQTT_PAYLOAD_OFFLINE,
               qos=MQTT_QOS, retain=True)
 mqtt.username_pw_set(MQTT_USER, MQTT_PASSWORD)
+if MQTT_TLS:
+    mqtt.tls_set(cert_reqs=ssl.CERT_REQUIRED)
 mqtt.connect(MQTT_BROKER, MQTT_PORT)
 mqtt.loop_start()
 
